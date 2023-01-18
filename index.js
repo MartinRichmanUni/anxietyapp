@@ -35,7 +35,7 @@ app.post("/register", (req, res) => {
     const password = req.body.password;
   
     conn.query(
-      "INSERT INTO user (fname, lname, email, password) VALUES (?,?,?,?)",
+      "INSERT INTO user (user_fname, user_lname, user_email, user_password) VALUES (?,?,?,?)",
       [fname, lname, email, password],
       (err, result) => {
         if (err) {
