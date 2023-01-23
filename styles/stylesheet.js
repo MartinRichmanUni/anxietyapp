@@ -24,5 +24,22 @@ export const styles = StyleSheet.create({
       justifyContent: "center",
       marginTop: 40,
       backgroundColor: "#FF1493",
+    },
+    journalEntry: {
+      backgroundColor: "#DEEDEE",
+      borderRadius: 15,
+      padding: 15,
+      textAlignVertical: 'top',
+      fontSize: 20,
+      flexShrink: 1,
+    },
+    row: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignContent: 'space-between',
+    },
+    scroll: {
+      marginHorizontal: 10,
     }
     });

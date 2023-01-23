@@ -1,36 +1,44 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { Text, TextInput, View, TouchableOpacity, Alert } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator} from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from "react";
 import axios from "axios";
 import {styles} from './styles/stylesheet';
 
 import HomeScreen from './screens/HomeScreen';
-
+import { Journal } from './screens/Tools';
+import Tools from './screens/Tools';
 
 function LoginScreen({ navigation }) {
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [user_email, setEmail] = useState();
+  const [user_password, setPassword] = useState();
 
   const loginCheck = () => {
     axios.get('http://192.168.0.15:19007/login', {
       params: {
-        email: {email},
-        password: {password},
+        user_email: {user_email},
+        user_password: {user_password},
       },
     }).then((response) => {
         if (!Object.keys(response.data).length) {
           // if no data is found alert user
           Alert.alert("Login", "Email address or password is incorrect");
+          
         } else {
+
+          {response.data.map((user) => (
+            global.user_ID = user.user_ID      
+          ))}
+          //Testing purposes
+          console.log(global.user_ID);
           navigation.navigate("Home");
         }
     }).catch((error) => console.log(error)); 
   };
-
 
   return (
     <View style={styles.container}>
@@ -45,7 +53,7 @@ function LoginScreen({ navigation }) {
         placeholderTextColor="#003f5c"
         placeholder='Password'/>
         <TouchableOpacity
-        onPress={() => navigation.navigate("Home")}>
+        onPress={()=> navigation.navigate("Home")}>
           <Text> Forgotten Password?</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -159,24 +167,42 @@ function RegisterScreen({navigation}) {
   );
 };
 
-const Stack = createStackNavigator();
+const LoginStack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+const ToolStack = createStackNavigator();
 
-function MyStack() {
+function LoginStackScreen() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Group>
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Group>
-    </Stack.Navigator>
+    <LoginStack.Navigator screenOptions={{ headerShown: false }}>
+        <LoginStack.Screen name="Login" component={LoginScreen} />
+        <LoginStack.Screen name="Register" component={RegisterScreen} />
+        <LoginStack.Screen name="Home" component={HomeTab} />
+    </LoginStack.Navigator>
   );
 };
+
+function ToolStackScreen() {
+  return (
+    <ToolStack.Navigator>
+      <ToolStack.Screen name="Tools" component={Tools} />
+      <ToolStack.Screen name="Journal" component={Journal} />
+    </ToolStack.Navigator>
+  );
+}
+
+function HomeTab() {
+  return (
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen name="HomeScreen" component={HomeScreen} />
+        <Tab.Screen name="ToolsScreen" component={ToolStackScreen} />
+  </Tab.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <NavigationContainer>
-      <MyStack />
+      <LoginStackScreen />
     </NavigationContainer>
   );
 };
