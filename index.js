@@ -9,7 +9,8 @@ app.use(express.json());
 const conn = mysql.createConnection(process.env.DATABASE_URL);
 conn.connect(function(err) {
     if (err) throw err;
-    console.log("Succesfully connected to PlanetScale!"); //Just to see valid connection
+    //Displays connection has been established
+    console.log("Succesfully connected to PlanetScale!"); 
 });
 
 // Login user
@@ -27,7 +28,7 @@ app.get('/login', (req, res) => {
     });
 });
 
-  // Register user
+// Register user
 app.post("/register", (req, res) => {
     const fname = req.body.fname;
     const lname = req.body.lname;
@@ -67,6 +68,7 @@ app.post("/sendEntry", (req, res) => {
   )
 });
 
+
 //Get Journal Entries
 app.get('/getEntries', (req, res) => {
 
@@ -81,6 +83,64 @@ app.get('/getEntries', (req, res) => {
   });
 });
 
+//Get User's Goals
+app.get('/getGoals', (req,res) => {
+  const user_ID = req.query.user_ID; 
+  conn.query("SELECT goal.goal_ID, goal.goal_title, step.step_ID, step.step_desc FROM goal INNER JOIN step ON goal.goal_ID = step.goal_ID",
+  [user_ID], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  });
+});
+
+//Add new Supporter
+app.post("/sendSupporter", (req, res) => {
+  const supporter_fname = req.body.supporter_fname;
+  const relationship_ID = req.body.relationship_ID;
+  const user_ID = req.body.user_ID;
+
+  conn.query(
+    "INSERT INTO supporter (supporter_fname, relationship_ID, user_ID) VALUES (?,?,?)",
+    [supporter_fname, relationship_ID, user_ID],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(req.body);
+      }
+    }
+  )
+});
+
+//Get User's Supporters
+app.get("/getSupporters", (req, res) => {
+  const user_ID = req.query.user_ID; 
+  conn.query("SELECT supporter_ID, supporter_fname, relationship_ID FROM supporter WHERE ?",
+  [user_ID], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
+//Get All Relationships
+app.get('/getRelationships', (req,res) => {
+  conn.query("SELECT relationship_ID, relationship_title FROM relationship",
+  (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  });
+});
 
 //Opens port for node server
 app.listen(19007, () => {

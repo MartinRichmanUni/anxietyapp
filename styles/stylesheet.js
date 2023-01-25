@@ -7,6 +7,12 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
+    contRow: {
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      padding: 10,
+    },
     inputView: {
       backgroundColor: "#FFC0CB",
       borderRadius: 30,
@@ -41,5 +47,11 @@ export const styles = StyleSheet.create({
     },
     scroll: {
       marginHorizontal: 10,
+    },
+    toolThumb: {
+      width: '50%',
+      backgroundColor: "#DEEDEE",
+      height: 200,
+      padding: 10,
     }
     });

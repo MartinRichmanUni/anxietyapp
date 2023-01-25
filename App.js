@@ -10,6 +10,9 @@ import {styles} from './styles/stylesheet';
 
 import HomeScreen from './screens/HomeScreen';
 import { Journal } from './screens/Tools';
+import { Goals } from './screens/Tools';
+import { Supporters } from './screens/Tools';
+import { Mood } from './screens/Tools';
 import Tools from './screens/Tools';
 
 function LoginScreen({ navigation }) {
@@ -186,6 +189,9 @@ function ToolStackScreen() {
     <ToolStack.Navigator>
       <ToolStack.Screen name="Tools" component={Tools} />
       <ToolStack.Screen name="Journal" component={Journal} />
+      <ToolStack.Screen name="Goals" component={Goals} />
+      <ToolStack.Screen name="Supporters" component={Supporters} />
+      <ToolStack.Screen name="Mood Tracker" component={Mood} />
     </ToolStack.Navigator>
   );
 }
