@@ -1,11 +1,19 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform, StatusBar } from "react-native";
 
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "#fff",
+      backgroundColor: "white",
       alignItems: "center",
       justifyContent: "center",
+    },
+    AndroidSafeArea: {
+      flex: 1,
+      backgroundColor: "white",
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    },
+    intro: {
+      flex: 2,
     },
     contRow: {
       flex: 1,
@@ -53,5 +61,20 @@ export const styles = StyleSheet.create({
       backgroundColor: "#DEEDEE",
       height: 200,
       padding: 10,
+      borderWidth: 3,
+    },
+    homeCont: {
+      flex: 1,
+      flexDirection: 'column',
+      width: '100%',
+      height: 200,
+      borderColor: 'grey',
+      borderWidth: 1,
+      backgroundColor: '#6a779c',
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    titles: {
+      fontSize: 35,
     }
     });

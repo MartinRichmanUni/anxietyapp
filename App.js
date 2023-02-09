@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import {  SafeAreaProvider} from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -186,7 +187,7 @@ function LoginStackScreen() {
 
 function ToolStackScreen() {
   return (
-    <ToolStack.Navigator>
+    <ToolStack.Navigator screenOptions={{ headerShown: false }}>
       <ToolStack.Screen name="Tools" component={Tools} />
       <ToolStack.Screen name="Journal" component={Journal} />
       <ToolStack.Screen name="Goals" component={Goals} />
@@ -207,9 +208,12 @@ function HomeTab() {
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <SafeAreaProvider style={styles.AndroidSafeArea}>
+      <NavigationContainer>
       <LoginStackScreen />
     </NavigationContainer>
+    </SafeAreaProvider>
+    
   );
 };
 
