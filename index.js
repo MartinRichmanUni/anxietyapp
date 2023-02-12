@@ -142,6 +142,52 @@ app.get('/getRelationships', (req,res) => {
   });
 });
 
+//Get User Details
+app.get('/getUser', (req,res) => {
+  const user_ID = req.query.user_ID; 
+  conn.query("SELECT user_ID, user_fname, user_lname, user_email FROM user WHERE ?",
+  [user_ID], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+});
+
+//Get User Password
+app.get('/getPassword', (req,res) => {
+  const user_ID = req.query.user_ID;
+  const user_password = req.query.user_password;
+
+  conn.query("SELECT user_password FROM user WHERE ? AND ?",
+  [user_ID, user_password], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+});
+
+//Update User Password
+app.post('/changePassword', (req,res) => {
+  const newPass = req.body.newPass;
+  const user_ID = req.body.user_ID;
+
+  conn.query(
+    "UPDATE user SET user_password = ? WHERE user_ID = ?",
+    [newPass, user_ID],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(req.body);
+      }
+    }
+  )
+});
+
 //Opens port for node server
 app.listen(19007, () => {
 console.log(`Node server listening`)
