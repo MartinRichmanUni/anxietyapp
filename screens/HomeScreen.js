@@ -1,7 +1,33 @@
-import { View, Text } from 'react-native';
+import { View, Text} from 'react-native';
 import { styles } from '../styles/stylesheet';
+import React from 'react';
 
-export default function HomeScreen({ navigation}) {
+export function Anxiety() {
+    return (
+        <View>
+
+        </View>
+    )
+};
+
+export function Symptoms() {
+    return (
+        <View>
+            
+        </View>
+    )
+};
+
+export function Treatment() {
+    return (
+        <View>
+            
+        </View>
+    )
+};
+
+export default function HomeScreen ({ navigation }) {
+
     return (
         <View style={styles.container}>
             <View style={styles.intro}>

@@ -1,20 +1,25 @@
 import 'react-native-gesture-handler';
 import {  SafeAreaProvider} from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { Text, TextInput, View, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
+import { Text, TextInput, View, TouchableOpacity, Alert} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from "react";
 import axios from "axios";
+
 import {styles} from './styles/stylesheet';
 
+
 import HomeScreen from './screens/HomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import { Journal } from './screens/Tools';
 import { Goals } from './screens/Tools';
 import { Supporters } from './screens/Tools';
 import { Mood } from './screens/Tools';
 import Tools from './screens/Tools';
+
+
 
 function LoginScreen({ navigation }) {
 
@@ -37,8 +42,6 @@ function LoginScreen({ navigation }) {
           {response.data.map((user) => (
             global.user_ID = user.user_ID      
           ))}
-          //Testing purposes
-          console.log(global.user_ID);
           navigation.navigate("Home");
         }
     }).catch((error) => console.log(error)); 
@@ -174,13 +177,15 @@ function RegisterScreen({navigation}) {
 const LoginStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ToolStack = createStackNavigator();
+const HomeStack = createStackNavigator();
+const TestStack = createStackNavigator();
 
 function LoginStackScreen() {
   return (
     <LoginStack.Navigator screenOptions={{ headerShown: false }}>
         <LoginStack.Screen name="Login" component={LoginScreen} />
         <LoginStack.Screen name="Register" component={RegisterScreen} />
-        <LoginStack.Screen name="Home" component={HomeTab} />
+        <LoginStack.Screen name="Home" component={AppTab} />
     </LoginStack.Navigator>
   );
 };
@@ -197,12 +202,41 @@ function ToolStackScreen() {
   );
 }
 
-function HomeTab() {
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name ="Home" component={HomeScreen} />
+    </HomeStack.Navigator>
+  );
+}
+
+function AppTab() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="HomeScreen" component={HomeScreen} />
+        <Tab.Screen name="HomeScreen" component={HomeStackScreen} />
         <Tab.Screen name="ToolsScreen" component={ToolStackScreen} />
+        <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
   </Tab.Navigator>
+  );
+}
+
+function TestStacker() {
+  
+  return (
+    <TestStack.Navigator>
+      {isLoggedIn ? (
+    // Screens for logged in users
+    <TestStack.Group>
+      <TestStack.Screen name="Home" component={HomeStackScreen} />
+    </TestStack.Group>
+  ) : (
+    // Auth screens
+    <TestStack.Group screenOptions={{ headerShown: false }}>
+      <TestStack.Screen name="Login" component={LoginScreen}/>
+      <TestStack.Screen name="Register" component={RegisterScreen} />
+    </TestStack.Group>
+  )}
+    </TestStack.Navigator>
   );
 }
 
@@ -210,8 +244,8 @@ export default function App() {
   return (
     <SafeAreaProvider style={styles.AndroidSafeArea}>
       <NavigationContainer>
-      <LoginStackScreen />
-    </NavigationContainer>
+        <LoginStackScreen />
+      </NavigationContainer>
     </SafeAreaProvider>
     
   );
