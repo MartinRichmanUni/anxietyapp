@@ -18,8 +18,9 @@ import { Goals } from './screens/Tools';
 import { Supporters } from './screens/Tools';
 import { Mood } from './screens/Tools';
 import Tools from './screens/Tools';
-
-
+import { Anxiety } from './screens/HomeScreen';
+import { Treatment } from './screens/HomeScreen';
+import { Symptoms } from './screens/HomeScreen';
 
 function LoginScreen({ navigation }) {
 
@@ -38,7 +39,7 @@ function LoginScreen({ navigation }) {
           Alert.alert("Login", "Email address or password is incorrect");
           
         } else {
-
+          //Create Global User ID variable
           {response.data.map((user) => (
             global.user_ID = user.user_ID      
           ))}
@@ -206,6 +207,9 @@ function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name ="Home" component={HomeScreen} />
+      <HomeStack.Screen name ="Anxiety" component={Anxiety} />
+      <HomeStack.Screen name ="Symptoms" component={Symptoms} />
+      <HomeStack.Screen name ="Treatment" component={Treatment} />
     </HomeStack.Navigator>
   );
 }

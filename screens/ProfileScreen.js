@@ -31,8 +31,16 @@ export default function ProfileScreen ({ navigation }) {
         }).catch((error) => console.log(error)); 
     };
 
+    //Return back to check Modal and display
+    const switchModal = () => {
+        setModalCheckVisible(true);
+        setModalChangeVisible(!modalchangeVisible);
+    };
+
     //Change Password for User
     const changePass = () => {
+        //TO DO: Validate input(not empty)
+    
         axios.post('http://192.168.0.15:19007/changePassword', {
           newPass: newPass,
           user_ID: global.user_ID,
@@ -87,10 +95,18 @@ export default function ProfileScreen ({ navigation }) {
                             onChangeText={setPassword}
                             value={user_password}
                         />
-                        <TouchableOpacity
-                        onPress={checkPass}>
-                            <Text> Confirm </Text>
-                        </TouchableOpacity>
+                        <View >
+                            <TouchableOpacity
+                            onPress={() => {
+                                setModalCheckVisible(!modalcheckVisible);
+                              }}>
+                                <Text> Cancel </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={checkPass}>
+                                <Text> Confirm </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
@@ -108,10 +124,16 @@ export default function ProfileScreen ({ navigation }) {
                             onChangeText={setNewPassword}
                             value={newPass}
                         />
-                        <TouchableOpacity
-                        onPress={changePass}>
-                            <Text> Change Password</Text>
-                        </TouchableOpacity>
+                        <View >
+                            <TouchableOpacity
+                            onPress={switchModal}>
+                                <Text> Cancel </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={changePass}>
+                                <Text> Change Password</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>
