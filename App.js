@@ -110,20 +110,21 @@ function RegisterScreen({navigation}) {
   }
 
   function validateEmail() {
-    if (email == null) {
-      Alert.alert("Alert", "Email address is required");
-    } else {
       return emailRegExp.test(email);
-    }
   }
 
   //Validation check
   function onSubmit() {
     let validCheck = 1;
 
+    if (!validateEmail() || !validatePassword() || !checkPasswords()) {
+      Alert.alert("Error", "Please ensure all data fields are not empty and in the correct format");
+      validCheck = 0;
+    }
+
     if (validCheck) {
       addUser();
-      Alert.alert("Account Created", "Account successfully created!")
+      Alert.alert("Account Created", "Account successfully created!");
       navigation.navigate("Login");
     }
   }
@@ -180,15 +181,6 @@ function RegisterScreen({navigation}) {
   );
 };
 
-function CustomNavigationBar({ navigation, back }) {
-  return (
-    <Appbar.Header>
-      {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-      <Appbar.Content title="My awesome app" />
-    </Appbar.Header>
-  );
-}
-
 const LoginStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ToolStack = createStackNavigator();
@@ -196,7 +188,7 @@ const HomeStack = createStackNavigator();
 
 function LoginStackScreen() {
   return (
-    <LoginStack.Navigator screenOptions={{ headerShown: false }}>
+    <LoginStack.Navigator >
         <LoginStack.Screen name="Login" component={LoginScreen} />
         <LoginStack.Screen name="Register" component={RegisterScreen} />
         

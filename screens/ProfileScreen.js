@@ -3,6 +3,7 @@ import { styles } from '../styles/stylesheet';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+
 export default function ProfileScreen ({ navigation }) {
 
     var user_ID = global.user_ID;
