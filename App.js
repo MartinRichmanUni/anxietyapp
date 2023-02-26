@@ -7,6 +7,7 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from "react";
 import axios from "axios";
+import { Appbar } from 'react-native-paper';
 
 import {styles} from './styles/stylesheet';
 
@@ -22,10 +23,14 @@ import { Anxiety } from './screens/HomeScreen';
 import { Treatment } from './screens/HomeScreen';
 import { Symptoms } from './screens/HomeScreen';
 
+const AuthContext = React.createContext();
+
 function LoginScreen({ navigation }) {
 
   const [user_email, setEmail] = useState();
   const [user_password, setPassword] = useState();
+
+  const { signIn } = React.useContext(AuthContext);
 
   const loginCheck = () => {
     axios.get('http://192.168.0.15:19007/login', {
@@ -43,7 +48,7 @@ function LoginScreen({ navigation }) {
           {response.data.map((user) => (
             global.user_ID = user.user_ID      
           ))}
-          navigation.navigate("Home");
+          signIn({ user_email, user_password })
         }
     }).catch((error) => console.log(error)); 
   };
@@ -175,25 +180,33 @@ function RegisterScreen({navigation}) {
   );
 };
 
+function CustomNavigationBar({ navigation, back }) {
+  return (
+    <Appbar.Header>
+      {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      <Appbar.Content title="My awesome app" />
+    </Appbar.Header>
+  );
+}
+
 const LoginStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ToolStack = createStackNavigator();
 const HomeStack = createStackNavigator();
-const TestStack = createStackNavigator();
 
 function LoginStackScreen() {
   return (
     <LoginStack.Navigator screenOptions={{ headerShown: false }}>
         <LoginStack.Screen name="Login" component={LoginScreen} />
         <LoginStack.Screen name="Register" component={RegisterScreen} />
-        <LoginStack.Screen name="Home" component={AppTab} />
+        
     </LoginStack.Navigator>
   );
 };
 
 function ToolStackScreen() {
   return (
-    <ToolStack.Navigator screenOptions={{ headerShown: false }}>
+    <ToolStack.Navigator>
       <ToolStack.Screen name="Tools" component={Tools} />
       <ToolStack.Screen name="Journal" component={Journal} />
       <ToolStack.Screen name="Goals" component={Goals} />
@@ -205,7 +218,7 @@ function ToolStackScreen() {
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStack.Navigator >
       <HomeStack.Screen name ="Home" component={HomeScreen} />
       <HomeStack.Screen name ="Anxiety" component={Anxiety} />
       <HomeStack.Screen name ="Symptoms" component={Symptoms} />
@@ -224,33 +237,90 @@ function AppTab() {
   );
 }
 
-function TestStacker() {
-  
-  return (
-    <TestStack.Navigator>
-      {isLoggedIn ? (
-    // Screens for logged in users
-    <TestStack.Group>
-      <TestStack.Screen name="Home" component={HomeStackScreen} />
-    </TestStack.Group>
-  ) : (
-    // Auth screens
-    <TestStack.Group screenOptions={{ headerShown: false }}>
-      <TestStack.Screen name="Login" component={LoginScreen}/>
-      <TestStack.Screen name="Register" component={RegisterScreen} />
-    </TestStack.Group>
-  )}
-    </TestStack.Navigator>
-  );
-}
+export default function App({ navigation }) {
 
-export default function App() {
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
+
+  React.useEffect(() => {
+    // Fetch the token from storage then navigate to our appropriate place
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        // Restore token stored in `SecureStore` or any other encrypted storage
+        // userToken = await SecureStore.getItemAsync('userToken');
+      } catch (e) {
+        // Restoring token failed
+      }
+
+      // After restoring token, we may need to validate it in production apps
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+
+    bootstrapAsync();
+  }, []);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data) => {
+        // In a production app, we need to send some data (usually username, password) to server and get a token
+        // We will also need to handle errors if sign in failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signUp: async (data) => {
+        // In a production app, we need to send user data to server and get a token
+        // We will also need to handle errors if sign up failed
+        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
+        // In the example, we'll use a dummy token
+
+        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+      },
+    }),
+    []
+  );
+
   return (
-    <SafeAreaProvider style={styles.AndroidSafeArea}>
+    <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <LoginStackScreen />
+        {state.userToken == null ? <LoginStackScreen /> : <AppTab /> }
       </NavigationContainer>
-    </SafeAreaProvider>
+    </AuthContext.Provider>
+    
     
   );
 };
