@@ -9,7 +9,7 @@ app.use(express.json());
 const conn = mysql.createConnection(process.env.DATABASE_URL);
 conn.connect(function(err) {
     if (err) throw err;
-    //Displays connection has been established
+    // Displays connection has been established
     console.log("Succesfully connected to PlanetScale!"); 
 });
 
@@ -48,7 +48,7 @@ app.post("/register", (req, res) => {
     );
 });
 
-//Create new Journal Entry
+// Create new Journal Entry
 app.post("/sendEntry", (req, res) => {
   const entry_title = req.body.entry_title;
   const entry_desc = req.body.entry_desc;
@@ -69,7 +69,7 @@ app.post("/sendEntry", (req, res) => {
 });
 
 
-//Get Journal Entries
+// Get Journal Entries
 app.get('/getEntries', (req, res) => {
 
   const user_ID = req.query.user_ID; 
@@ -83,7 +83,7 @@ app.get('/getEntries', (req, res) => {
   });
 });
 
-//Get User's Goals
+// Get User's Goals
 app.get('/getGoals', (req,res) => {
   const user_ID = req.query.user_ID; 
   conn.query("SELECT goal.goal_ID, goal.goal_title, step.step_ID, step.step_desc FROM goal INNER JOIN step ON goal.goal_ID = step.goal_ID",
@@ -97,7 +97,7 @@ app.get('/getGoals', (req,res) => {
   });
 });
 
-//Add new Supporter
+// Add new Supporter
 app.post("/sendSupporter", (req, res) => {
   const supporter_fname = req.body.supporter_fname;
   const relationship_ID = req.body.relationship_ID;
@@ -116,7 +116,7 @@ app.post("/sendSupporter", (req, res) => {
   )
 });
 
-//Get User's Supporters
+// Get User's Supporters
 app.get("/getSupporters", (req, res) => {
   const user_ID = req.query.user_ID; 
   conn.query("SELECT supporter_ID, supporter_fname, relationship_ID FROM supporter WHERE ?",
@@ -129,7 +129,7 @@ app.get("/getSupporters", (req, res) => {
   });
 })
 
-//Get All Relationships
+// Get All Relationships
 app.get('/getRelationships', (req,res) => {
   conn.query("SELECT relationship_ID, relationship_title FROM relationship",
   (err, result) => {
@@ -142,7 +142,41 @@ app.get('/getRelationships', (req,res) => {
   });
 });
 
-//Get User Details
+// Get All Moods
+app.get('/getMoods', (req,res) => {
+  conn.query("SELECT mood_ID, mood_title FROM mood",
+  (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      res.send(result);
+    }
+  });
+});
+
+// Send User Created Mood
+app.post("/sendMood", (req, res) => {
+  const tracker_date = req.body.tracker_date;
+  const tracker_time = req.body.tracker_time;
+  const tracker_influence = req.body.tracker_influence;
+  const mood_ID = req.body.mood_ID;
+  const user_ID = req.body.user_ID;
+
+  conn.query(
+    "INSERT INTO moodTracker (tracker_date, tracker_time, tracker_influence, mood_ID, user_ID) VALUES (?,?,?,?,?)",
+    [tracker_date, tracker_time, tracker_influence, mood_ID, user_ID],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(req.body);
+      }
+    }
+  )
+});
+
+// Get User Details
 app.get('/getUser', (req,res) => {
   const user_ID = req.query.user_ID; 
   conn.query("SELECT user_ID, user_fname, user_lname, user_email FROM user WHERE ?",
@@ -155,7 +189,7 @@ app.get('/getUser', (req,res) => {
   });
 });
 
-//Get User Password
+// Get User Password
 app.get('/getPassword', (req,res) => {
   const user_ID = req.query.user_ID;
   const user_password = req.query.user_password;
@@ -170,7 +204,7 @@ app.get('/getPassword', (req,res) => {
   });
 });
 
-//Update User Password
+// Update User Password
 app.post('/changePassword', (req,res) => {
   const newPass = req.body.newPass;
   const user_ID = req.body.user_ID;
@@ -188,7 +222,7 @@ app.post('/changePassword', (req,res) => {
   )
 });
 
-//Opens port for node server
+// Opens port for node server
 app.listen(19007, () => {
 console.log(`Node server listening`)
 })

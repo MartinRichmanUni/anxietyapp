@@ -174,7 +174,7 @@ export function Supporters() {
                 <SelectList 
                 setSelected={setRelationshipID} 
                 data={relationships} 
-                onSelect={() => alert(relationship_ID)} />
+                />
                 <TouchableOpacity
                     style
                     onPress={supporterSubmit}>
@@ -196,10 +196,77 @@ export function Supporters() {
 };
 
 export function Mood() {
-    return (
-        <View>
 
-        </View>
+    const [moods, setMoods] = useState([]);
+    const [mood_ID, setMoodID] = useState();
+    var tracker_date = moment().format("YYYY,MM,DD");
+    const [tracker_influence, setInfluence] = useState();
+    const time = [
+        "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00",
+        "13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00","24:00"
+    ];
+    const [tracker_time , setTime] = useState();
+
+    const moodSubmit = () => {
+        axios.post('http://192.168.0.15:19007/sendMood', {
+          tracker_date: tracker_date,
+          tracker_time: tracker_time,
+          tracker_influence: tracker_influence,
+          mood_ID: mood_ID,
+          user_ID: global.user_ID,
+        }).then(() => {
+          Alert.alert("Success", "Mood has been saved!");
+        }).catch((error) => console.log(error));
+    };
+
+    // Load moods data and set Array
+    useEffect(() => {
+        axios.get('http://192.168.0.15:19007/getMoods')
+        .then((response) => {
+
+            // Loaded data formatted for drop-down list
+            let moodArray = response.data.map((item) => {
+                return {key: item.mood_ID, value: item.mood_title}
+              })
+
+            setMoods(moodArray);     
+        }).catch((error) => console.log(error));
+    },[]);
+
+    return (
+            <View style={styles.container}>
+            <View> 
+                <Text> Mood Tracker </Text>
+            </View>
+                <Text> Being able to track ones mood throughout the day provides a better understanding of what times of day may affect an individuals mood the most, such as early morning due to the need to get to work or school.</Text>
+                <Text> This can help to identify specific triggers or causes of anxiety and help in managing those triggers so they occur less or are less impactful</Text>
+                <View>
+                    <Text>Time of day:</Text>
+                    <SelectList 
+                    setSelected={setTime}
+                    data={time} 
+                    />
+                    <Text>How I am feeling:</Text>
+                    <SelectList 
+                    setSelected={setMoodID}
+                    data={moods} 
+                    save="key"
+                    />
+                    <Text> What has influenced my mood:</Text>
+                    <TextInput style={styles.journalEntry}
+                        multiline
+                        numberOfLines={3}
+                        maxLength={100}
+                        placeholder='My mood has been influenced by'
+                        onChangeText={setInfluence}
+                        value={tracker_influence}/>
+                    <TouchableOpacity
+                        style
+                        onPress={moodSubmit}>
+                            <Text> Add New Supporter </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
     );
 };
 
