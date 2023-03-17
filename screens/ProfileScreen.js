@@ -7,6 +7,7 @@ import axios from "axios";
 export default function ProfileScreen ({ navigation }) {
 
     var user_ID = global.user_ID;
+    var url = global.url;
     const [profile, setProfile] = useState([]);
     const [modalchangeVisible, setModalChangeVisible] = useState(false);
     const [modalcheckVisible, setModalCheckVisible] = useState(false);
@@ -15,7 +16,7 @@ export default function ProfileScreen ({ navigation }) {
 
     //Check Current Password for User
     const checkPass = () => {
-        axios.get('http://192.168.0.15:19007/getPassword', {
+        axios.get(url + '/getPassword', {
             params: {
                 user_ID: {user_ID},
                 user_password: {user_password},
@@ -42,7 +43,7 @@ export default function ProfileScreen ({ navigation }) {
     const changePass = () => {
         //TO DO: Validate input(not empty)
     
-        axios.post('http://192.168.0.15:19007/changePassword', {
+        axios.post(url + '/changePassword', {
           newPass: newPass,
           user_ID: global.user_ID,
         }).then(() => {
@@ -54,7 +55,7 @@ export default function ProfileScreen ({ navigation }) {
 
     //On screen load, call user data
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getUser', {
+        axios.get(url + '/getUser', {
           params: {
             user_ID: {user_ID},
           },

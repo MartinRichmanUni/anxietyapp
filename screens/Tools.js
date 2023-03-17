@@ -3,6 +3,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { styles } from '../styles/stylesheet';
 import React, { useEffect, useState } from "react";
+import { DataTable } from 'react-native-paper';
 import moment from 'moment'; 
 import axios from "axios";
 
@@ -14,10 +15,11 @@ export function Journal() {
     const [entries, setEntries] = useState([]);
     const [added, setAdded] = useState(false);
     var user_ID = global.user_ID;
+    var url = global.url;
     
     //Send user entered data to database
     const journalSubmit = () => {
-        axios.post('http://192.168.0.15:19007/sendEntry', {
+        axios.post(url + '/sendEntry', {
           entry_title: entry_title,
           entry_desc: entry_desc,
           entry_date: entry_date,
@@ -32,7 +34,7 @@ export function Journal() {
 
     //On screen load, call entry data
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getEntries', {
+        axios.get(url + '/getEntries', {
             params: {
             user_ID: {user_ID},
         },
@@ -92,7 +94,7 @@ export function Goals() {
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getGoals', {
+        axios.get(url + '/getGoals', {
             params: {
             
         },
@@ -121,7 +123,7 @@ export function Supporters() {
     const [relationship_ID, setRelationshipID] = useState();
 
     const supporterSubmit = () => {
-        axios.post('http://192.168.0.15:19007/sendSupporter', {
+        axios.post(url + '/sendSupporter', {
           supporter_fname: supporter_fname,
           relationship_ID: relationship_ID,
           user_ID: global.user_ID,
@@ -135,7 +137,7 @@ export function Supporters() {
 
     
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getSupporters', {
+        axios.get(url + '/getSupporters', {
             params: {
                 user_ID: {user_ID},
             },
@@ -149,7 +151,7 @@ export function Supporters() {
 
     // Load relationship data and set Array
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getRelationships')
+        axios.get(url + '/getRelationships')
         .then((response) => {
 
             // Loaded data formatted for drop-down list
@@ -198,9 +200,11 @@ export function Supporters() {
 export function Mood() {
 
     const [moods, setMoods] = useState([]);
+    const [userMoods, setUserMoods] = useState([]);
     const [mood_ID, setMoodID] = useState();
     var tracker_date = moment().format("YYYY,MM,DD");
     const [tracker_influence, setInfluence] = useState();
+    const [added, setAdded] = useState(false);
     const time = [
         "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00",
         "13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00","24:00"
@@ -208,20 +212,21 @@ export function Mood() {
     const [tracker_time , setTime] = useState();
 
     const moodSubmit = () => {
-        axios.post('http://192.168.0.15:19007/sendMood', {
+        axios.post(url + '/sendMood', {
           tracker_date: tracker_date,
           tracker_time: tracker_time,
           tracker_influence: tracker_influence,
           mood_ID: mood_ID,
           user_ID: global.user_ID,
         }).then(() => {
+            setAdded(true);
           Alert.alert("Success", "Mood has been saved!");
         }).catch((error) => console.log(error));
     };
 
-    // Load moods data and set Array
     useEffect(() => {
-        axios.get('http://192.168.0.15:19007/getMoods')
+        // Load moods data and set Array for drop-down list
+        axios.get(url + '/getMoods')
         .then((response) => {
 
             // Loaded data formatted for drop-down list
@@ -229,9 +234,20 @@ export function Mood() {
                 return {key: item.mood_ID, value: item.mood_title}
               })
 
-            setMoods(moodArray);     
+            setMoods(moodArray);   
+            setAdded(false);  
         }).catch((error) => console.log(error));
-    },[]);
+
+        // Load user moods data and set Array for table
+        axios.get(url + '/getUserMoods', {
+            params: {
+            user_ID: {user_ID},
+        },
+        }).then((response) => {
+            setUserMoods(response.data); 
+            setAdded(false);    
+        }).catch((error) => console.log(error));
+    },[added]);
 
     return (
             <View style={styles.container}>
@@ -263,8 +279,28 @@ export function Mood() {
                     <TouchableOpacity
                         style
                         onPress={moodSubmit}>
-                            <Text> Add New Supporter </Text>
+                            <Text> Add New Mood </Text>
                     </TouchableOpacity>
+                </View>
+                <View style={{width: '100%'}}>
+                <DataTable>
+                    <DataTable.Header >
+                        <DataTable.Title >Title</DataTable.Title>
+                        <DataTable.Title >Influence</DataTable.Title>
+                        <DataTable.Title>Time</DataTable.Title>
+                        <DataTable.Title>Date</DataTable.Title>
+                    </DataTable.Header>
+
+                    { userMoods.map((userMoods)=>(
+                            <DataTable.Row key={userMoods.tracker_ID}>
+                                <DataTable.Cell>{userMoods.mood_title}</DataTable.Cell>
+                                <DataTable.Cell>{userMoods.tracker_influence}</DataTable.Cell>
+                                <DataTable.Cell>{userMoods.tracker_time}</DataTable.Cell>
+                                <DataTable.Cell>{userMoods.tracker_date}</DataTable.Cell>
+                            </DataTable.Row>
+                        ))}
+
+                </DataTable>
                 </View>
             </View>
     );

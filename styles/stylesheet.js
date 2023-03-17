@@ -3,7 +3,7 @@ import { StyleSheet, Platform, StatusBar } from "react-native";
 export const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: "white",
+      backgroundColor: "#edf2f4",
       alignItems: "center",
       justifyContent: "center",
     },
@@ -40,10 +40,9 @@ export const styles = StyleSheet.create({
       flex: 1,
       flexDirection: 'row',
       flexWrap: 'wrap',
-      padding: 10,
     },
     inputView: {
-      backgroundColor: "#FFC0CB",
+      backgroundColor: "#8ecae6",
       borderRadius: 30,
       width: "70%",
       height: 45,
@@ -58,7 +57,7 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       marginTop: 40,
-      backgroundColor: "#FF1493",
+      backgroundColor: "#8ecae6",
     },
     journalEntry: {
       backgroundColor: "#DEEDEE",
@@ -79,7 +78,7 @@ export const styles = StyleSheet.create({
     },
     toolThumb: {
       width: '50%',
-      backgroundColor: "#DEEDEE",
+      backgroundColor: "#98c1d9",
       height: 200,
       padding: 10,
       borderWidth: 3,
@@ -91,7 +90,7 @@ export const styles = StyleSheet.create({
       height: 200,
       borderColor: 'grey',
       borderWidth: 1,
-      backgroundColor: '#6a779c',
+      backgroundColor: '#8ecae6',
       alignItems: "center",
       justifyContent: "center",
     },

@@ -7,11 +7,8 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from "react";
 import axios from "axios";
-import { Appbar } from 'react-native-paper';
 
 import {styles} from './styles/stylesheet';
-
-
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import { Journal } from './screens/Tools';
@@ -24,6 +21,10 @@ import { Treatment } from './screens/HomeScreen';
 import { Symptoms } from './screens/HomeScreen';
 
 const AuthContext = React.createContext();
+// URL for connecting to Node Server
+const url = 'http://192.168.0.15:19007';
+// Creation of Global variable
+global.url = url;
 
 function LoginScreen({ navigation }) {
 
@@ -33,24 +34,29 @@ function LoginScreen({ navigation }) {
   const { signIn } = React.useContext(AuthContext);
 
   const loginCheck = () => {
-    axios.get('http://192.168.0.15:19007/login', {
+    axios.get(url + '/login', {
       params: {
         user_email: {user_email},
         user_password: {user_password},
       },
-    }).then((response) => {
-        if (!Object.keys(response.data).length) {
-          // if no data is found alert user
+    })
+    .then((response) => 
+    { 
+        if (!Object.keys(response.data).length)
+        // if no data is found alert user
+        {
           Alert.alert("Login", "Email address or password is incorrect");
-          
-        } else {
-          //Create Global User ID variable
+        } 
+        else 
+        {
+          //Create Global User ID variable and Sign In
           {response.data.map((user) => (
             global.user_ID = user.user_ID      
           ))}
           signIn({ user_email, user_password })
         }
-    }).catch((error) => console.log(error)); 
+    })
+    .catch((error) => console.log(error)); 
   };
 
   return (
@@ -79,7 +85,7 @@ function LoginScreen({ navigation }) {
         onPress={() => navigation.navigate("Register")}>
           <Text> Create an Account</Text>
         </TouchableOpacity>
-    </View>
+    </View>  
   );
 };
 
@@ -130,7 +136,7 @@ function RegisterScreen({navigation}) {
   }
 
   const addUser = () => {
-    axios.post('http://192.168.0.15:19007/register', {
+    axios.post(url + '/register', {
       fname: fname,
       lname: lname,
       email: email,
@@ -185,20 +191,44 @@ const LoginStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const ToolStack = createStackNavigator();
 const HomeStack = createStackNavigator();
+const ProfileStack = createStackNavigator();
+
+const customHeaderStyle = {
+  headerStyle: {
+    backgroundColor: '#219ebc',
+  },
+  headerTintColor: '#fff',
+  headerTitleStyle: {
+    fontWeight: 'bold',
+  },
+}
 
 function LoginStackScreen() {
   return (
-    <LoginStack.Navigator >
+    <LoginStack.Navigator 
+    screenOptions={customHeaderStyle}>
         <LoginStack.Screen name="Login" component={LoginScreen} />
         <LoginStack.Screen name="Register" component={RegisterScreen} />
-        
     </LoginStack.Navigator>
+  );
+};
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator 
+    screenOptions={customHeaderStyle}>
+      <HomeStack.Screen name ="Home" component={HomeScreen} />
+      <HomeStack.Screen name ="Anxiety" component={Anxiety} />
+      <HomeStack.Screen name ="Symptoms" component={Symptoms} />
+      <HomeStack.Screen name ="Treatment" component={Treatment} />
+    </HomeStack.Navigator>
   );
 };
 
 function ToolStackScreen() {
   return (
-    <ToolStack.Navigator>
+    <ToolStack.Navigator
+    screenOptions={customHeaderStyle}>
       <ToolStack.Screen name="Tools" component={Tools} />
       <ToolStack.Screen name="Journal" component={Journal} />
       <ToolStack.Screen name="Goals" component={Goals} />
@@ -206,28 +236,27 @@ function ToolStackScreen() {
       <ToolStack.Screen name="Mood Tracker" component={Mood} />
     </ToolStack.Navigator>
   );
-}
+};
 
-function HomeStackScreen() {
+function ProfileStackScreen() {
   return (
-    <HomeStack.Navigator >
-      <HomeStack.Screen name ="Home" component={HomeScreen} />
-      <HomeStack.Screen name ="Anxiety" component={Anxiety} />
-      <HomeStack.Screen name ="Symptoms" component={Symptoms} />
-      <HomeStack.Screen name ="Treatment" component={Treatment} />
-    </HomeStack.Navigator>
-  );
-}
+    <ProfileStack.Navigator
+    screenOptions={customHeaderStyle}>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+    </ProfileStack.Navigator>
+  )
+};
+
 
 function AppTab() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator screenOptions={{ headerShown: false, }}>
         <Tab.Screen name="HomeScreen" component={HomeStackScreen} />
         <Tab.Screen name="ToolsScreen" component={ToolStackScreen} />
-        <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Tab.Screen name="ProfileScreen" component={ProfileStackScreen} />
   </Tab.Navigator>
   );
-}
+};
 
 export default function App({ navigation }) {
 
@@ -261,22 +290,10 @@ export default function App({ navigation }) {
     }
   );
 
+  // Fetch the token from storage then navigate to our appropriate place
   React.useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let userToken;
-
-      try {
-        // Restore token stored in `SecureStore` or any other encrypted storage
-        // userToken = await SecureStore.getItemAsync('userToken');
-      } catch (e) {
-        // Restoring token failed
-      }
-
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
       dispatch({ type: 'RESTORE_TOKEN', token: userToken });
     };
 
@@ -285,35 +302,24 @@ export default function App({ navigation }) {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data) => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-
+      signIn: async () => {
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
       signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async (data) => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
-        // In the example, we'll use a dummy token
-
+      signUp: async () => {
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
     }),
     []
   );
 
+
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
+      <AuthContext.Provider value={authContext}>
+      <NavigationContainer >
         {state.userToken == null ? <LoginStackScreen /> : <AppTab /> }
       </NavigationContainer>
-    </AuthContext.Provider>
-    
-    
+    </AuthContext.Provider> 
   );
 };
 

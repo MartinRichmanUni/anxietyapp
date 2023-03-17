@@ -222,6 +222,20 @@ app.post('/changePassword', (req,res) => {
   )
 });
 
+// Get User Moods
+app.get('/getUserMoods', (req,res) => {
+  const user_ID = req.query.user_ID;
+
+  conn.query("SELECT tr.tracker_ID, tr.tracker_date, tr.tracker_time, tr.tracker_influence, m.mood_title FROM moodTracker AS tr INNER JOIN mood AS m ON tr.mood_ID= m.mood_ID WHERE user_ID = ?",
+  [user_ID], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+});
+
 // Opens port for node server
 app.listen(19007, () => {
 console.log(`Node server listening`)
