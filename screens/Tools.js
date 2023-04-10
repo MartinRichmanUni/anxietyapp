@@ -103,18 +103,18 @@ export function Journal() {
     )
 };
 
-export function Goals() {
+export function HelpfulThoughts() {
 
-    const [goals, setGoals] = useState([]);
+    const [thoughts, setThoughts] = useState([]);
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
-        axios.get(url + '/getGoals', {
+        axios.get(url + '/getThoughts', {
             params: {
             
         },
         }).then((response) => {
-            setGoals(response.data); 
+            setThoughts(response.data); 
             setAdded(false);    
         }).catch((error) => console.log(error));
     },[added]);
@@ -360,8 +360,8 @@ export default function Tools({ navigation}) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.toolThumb}
-                    onPress={() => navigation.navigate("Goals")}>
-                        <Text> Goals</Text>
+                    onPress={() => navigation.navigate("HelpfulThoughts")}>
+                        <Text> HelpfulThoughts</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.toolThumb}

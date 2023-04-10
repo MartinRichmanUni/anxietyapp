@@ -12,14 +12,8 @@ import { useFonts } from 'expo-font';
 import {styles} from './styles/stylesheet';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import { Journal } from './screens/Tools';
-import { Goals } from './screens/Tools';
-import { Supporters } from './screens/Tools';
-import { Mood } from './screens/Tools';
-import Tools from './screens/Tools';
-import { Anxiety } from './screens/HomeScreen';
-import { Treatment } from './screens/HomeScreen';
-import { Symptoms } from './screens/HomeScreen';
+import { HelpfulThoughts, Journal, Supporters, Mood, Tools } from './screens/Tools';
+import { Anxiety, Treatment, Symptoms } from './screens/HomeScreen';
 
 const AuthContext = React.createContext();
 // URL for connecting to Node Server
@@ -232,7 +226,7 @@ function ToolStackScreen() {
     screenOptions={customHeaderStyle}>
       <ToolStack.Screen name="Tools" component={Tools} />
       <ToolStack.Screen name="Journal" component={Journal} />
-      <ToolStack.Screen name="Goals" component={Goals} />
+      <ToolStack.Screen name="Helpful Thoughts" component={HelpfulThoughts} />
       <ToolStack.Screen name="Supporters" component={Supporters} />
       <ToolStack.Screen name="Mood Tracker" component={Mood} />
     </ToolStack.Navigator>
