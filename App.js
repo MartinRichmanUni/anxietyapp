@@ -12,7 +12,8 @@ import { useFonts } from 'expo-font';
 import {styles} from './styles/stylesheet';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import { HelpfulThoughts, Journal, Supporters, Mood, Tools } from './screens/Tools';
+import Tools from './screens/Tools';
+import { HelpfulThoughts, Journal, Supporters, Mood} from './screens/Tools';
 import { Anxiety, Treatment, Symptoms } from './screens/HomeScreen';
 
 const AuthContext = React.createContext();

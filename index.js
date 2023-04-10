@@ -236,6 +236,51 @@ app.get('/getUserMoods', (req,res) => {
   });
 });
 
+// Get Pre-Existing Thoughts
+app.get('/getThoughts', (req,res) => {
+
+  conn.query("SELECT thought_ID, thought_title FROM thoughts",
+  (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+});
+
+// Get User Thoughts
+app.get('/getUserThoughts', (req,res) => {
+  const user_ID = req.query.user_ID;
+
+  conn.query("SELECT uthought_ID, uthought_title FROM userThoughts WHERE user_ID = ?",
+  [user_ID], (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+  });
+});
+
+// Update User Password
+app.post('/sendThought', (req,res) => {
+  const uthought_title = req.body.uthought_title;
+  const user_ID = req.body.user_ID;
+
+  conn.query(
+    "INSERT INTO userThoughts (uthought_title, user_ID) VALUES (?,?)",
+    [uthought_title, user_ID],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json(req.body);
+      }
+    }
+  )
+});
+
 // Opens port for node server
 app.listen(19007, () => {
 console.log(`Node server listening`)

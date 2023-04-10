@@ -107,25 +107,94 @@ export function HelpfulThoughts() {
 
     const [thoughts, setThoughts] = useState([]);
     const [added, setAdded] = useState(false);
+    const [uThought, setUThought] = useState();
+    const [userThoughts, setUserThoughts] = useState([]);
+    var user_ID = global.user_ID;
+    var url = global.url;
+
+    const thoughtSubmit = () => {
+        axios.post(url + '/sendThought', {
+          uthought_title: uThought,
+          user_ID: global.user_ID,
+        }).then(() => {
+            
+            setAdded(true)
+            setUThought("");
+          Alert.alert("Success", "Thought has been saved!");
+        }).catch((error) => console.log(error));
+    };
 
     useEffect(() => {
-        axios.get(url + '/getThoughts', {
+        // Get pre-existing thoughts for list
+        axios.get(url + '/getThoughts').then((response) => {
+
+            // Loaded data formatted for drop-down list
+            let moodArray = response.data.map((item) => {
+                return {key: item.thought_ID, value: item.thought_title}
+              })
+            setThoughts(moodArray); 
+            setAdded(false);    
+        }).catch((error) => console.log(error));
+
+        // Load user moods data and set Array for table
+        axios.get(url + '/getUserThoughts', {
             params: {
-            
+            user_ID: {user_ID},
         },
         }).then((response) => {
-            setThoughts(response.data); 
+            setUserThoughts(response.data); 
             setAdded(false);    
         }).catch((error) => console.log(error));
     },[added]);
 
     return (
-        <View style={styles.container}>
-            <ScrollView style={styles.scroll}>
-                <Text> Setting Goals and Objectives is a great way of setting targets to measure progress. </Text>
-                
-            </ScrollView>
-        </View>
+        <ScrollView >
+            <View style={styles.infoBlock}>
+                <Text> Creating helpful thoughts will help combat the negative thoughts that may arise throughout the day due to different circumstances. Adding thoughts specific to the negative thoughts you may experience
+                    will help in providing you with a different perspective of thinking in times where it might seem difficult not to think negatively.
+                </Text>
+            </View>
+            <View style={styles.entryCont}>
+                <Text style={styles.header}> Create New Thought </Text>
+                <View>
+                    <View style={{paddingVertical: 10}}>
+                        <Text style={styles.suppTitle}> Choose from the pre-existing list</Text>
+                        <SelectList 
+                        setSelected={setUThought} 
+                        data={thoughts} 
+                        save='value'
+                        />
+                    </View>
+                    <Text>{uThought}</Text>
+                    <View style={{paddingVertical: 10}}>
+                        <Text style={styles.suppTitle}> Or create your own Helpful Thought</Text>
+                        <TextInput 
+                        style={styles.journalEntry}
+                        onPress={thoughtSubmit}
+                        onChangeText={setUThought}
+                        placeholder='I will get through this'
+                        value={uThought}
+                        />
+                    </View>
+                </View>
+                <View style={styles.btnCont}>
+                    <TouchableOpacity style={styles.btnSubmit}
+                    onPress={thoughtSubmit}
+                        >
+                        <Text style={styles.btnText}> Submit Thought</Text>
+                    </TouchableOpacity>
+                </View> 
+            </View>
+            <View>
+                <Text style={styles.header}> Your Thoughts </Text>
+                { userThoughts.map((thoughts)=>(
+                            <View key={thoughts.uthought_ID} style={styles.toolCont}>
+                                  <Text> {thoughts.uthought_title} </Text>
+                            </View>
+                        ))}
+            </View> 
+             
+        </ScrollView>
     );
 };
 
@@ -360,7 +429,7 @@ export default function Tools({ navigation}) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.toolThumb}
-                    onPress={() => navigation.navigate("HelpfulThoughts")}>
+                    onPress={() => navigation.navigate("Helpful Thoughts")}>
                         <Text> HelpfulThoughts</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
