@@ -289,14 +289,14 @@ export function Mood() {
             </View>
             <View style={styles.entryCont}>
                 <Text style={styles.header}> Add New Mood</Text>
-                <View style={{paddingTop: 10, width: 200}}>
+                <View style={styles.dropdownCont}>
                     <Text style={styles.suppTitle}>Time of day:</Text>
                     <SelectList 
                     setSelected={setTime}
                     data={time} 
                     />
                 </View>
-                <View style={{paddingTop: 10, width: 200}}>
+                <View style={styles.dropdownCont}>
                     <Text style={styles.suppTitle}>How I am feeling:</Text>
                     <SelectList 
                     setSelected={setMoodID}

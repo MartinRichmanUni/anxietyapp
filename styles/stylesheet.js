@@ -161,6 +161,11 @@ export const styles = StyleSheet.create({
       paddingVertical: 5
     },
     suppTitle: {
-      fontSize: 20
+      fontSize: 20,
+      paddingBottom: 5
+    },
+    dropdownCont: {
+      paddingTop: 10, 
+      width: 200
     }
     });
