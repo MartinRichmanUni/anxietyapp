@@ -7,6 +7,17 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
     },
+    infoBlock: {
+      backgroundColor: '#C4ABFB', 
+      borderWidth: 1, 
+      padding: 15
+    },
+    toolCont: {
+      borderBottomWidth: 1, 
+      paddingHorizontal: 10, 
+      paddingVertical: 5, 
+      backgroundColor: '#F1F2F2'
+    },
     AndroidSafeArea: {
       flex: 1,
       backgroundColor: "white",
@@ -60,12 +71,12 @@ export const styles = StyleSheet.create({
       backgroundColor: "#8ecae6",
     },
     journalEntry: {
-      backgroundColor: "#DEEDEE",
+      backgroundColor: "#C9EDFA",
       borderRadius: 15,
       padding: 15,
       textAlignVertical: 'top',
-      fontSize: 20,
-      flexShrink: 1,
+      fontSize: 20, 
+      fontFamily: 'Oswald'
     },
     row: {
       flex: 1,
@@ -96,5 +107,60 @@ export const styles = StyleSheet.create({
     },
     titles: {
       fontSize: 35,
+    }, 
+    header: {
+      fontSize: 25, 
+      fontWeight: 'bold'
+    },
+    italicFont: {
+      fontStyle: 'italic', 
+      fontSize: 14
+    },
+    titleFont: {
+      fontSize: 22, 
+      fontWeight: 'bold'
+    },
+    rowCont: {
+      flexDirection: 'row', 
+      alignContent: 'space-between', 
+      paddingBottom: 10, 
+      paddingTop: 15
+    },
+    btnCont: {
+      alignItems: "center", 
+      paddingVertical: 10
+    },
+    btnSubmit: {
+      backgroundColor: '#82CEDD', 
+      borderWidth: 1, 
+      padding: 15, 
+      borderRadius: 15
+    },
+    btnText: {
+      fontSize: 18, 
+      fontWeight: 'bold'
+    },
+    entryCont: {
+      padding: 5, 
+      borderBottomWidth: 1
+    },
+    infoTxt: {
+      fontFamily: 'Abel',
+      fontSize: 16
+    },
+    oswaldFont: {
+      fontSize: 18, 
+      fontFamily: 'Oswald'
+    },
+    suppDetails: {
+      backgroundColor: '#C1DEEB', 
+      paddingVertical: 10, 
+      paddingLeft: 5
+    },
+    suppTitleCont: {
+      paddingVertical: 5
+    },
+    suppTitle: {
+      fontSize: 20
     }
     });

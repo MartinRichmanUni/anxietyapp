@@ -45,46 +45,61 @@ export function Journal() {
     },[added]);
 
     return (
-        <View style={styles.container}>
-            <ScrollView style={styles.scroll}>
-                <Text> 
-                    The journal is a great way of conceptualising thoughts and putting them onto paper. This provides a proven method of helping to understand what exactly you are thinking and feeling at any given moment.
-                </Text>       
-
-                <Text> New Journal Entry </Text>
-                    <View style={styles.row}>
-                        <TextInput
-                            placeholder='Entry Title'
-                            onChangeText={setTitle}
-                            value={entry_title}
-                        />
-                        <Text> {entry_desc.length}/250 characters</Text>  
+            <ScrollView>
+                <View style={styles.infoBlock}>
+                        <Text style={{fontFamily: 'Abel', fontSize: 18}}> 
+                        The journal is a great way of conceptualising thoughts and putting them onto paper. This provides a method of helping to understand what exactly you are thinking and feeling at any given moment.
+                    </Text> 
+                </View>  
+                <View style={styles.toolCont}>
+                    <Text style={styles.header}> New Journal Entry </Text>
+                <View style={styles.rowCont}>
+                    <View style={{flex: 2, borderBottomWidth: .5}}>
+                    <TextInput style={styles.titleFont}
+                        placeholder='Entry Title'
+                        onChangeText={setTitle}
+                        value={entry_title}
+                    />
                     </View>
-                    <TextInput style={styles.journalEntry}
-                    multiline
-                    numberOfLines={3}
-                    maxLength={250}
-                    placeholder='I am feeling this way'
-                    onChangeText={setDesc}
-                    value={entry_desc}/>
-                <TouchableOpacity
-                    onPress={journalSubmit}>
-                    <Text> Submit Entry</Text>
-                </TouchableOpacity>
-                    <Text> Previous Entries </Text>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.italicFont}> {entry_desc.length}/250 characters</Text>    
+                    </View>
+                    
+                </View>
+                        <TextInput style={styles.journalEntry}
+                        multiline
+                        numberOfLines={3}
+                        maxLength={250}
+                        placeholder='I am feeling this way'
+                        onChangeText={setDesc}
+                        value={entry_desc}/>
+                    <View style={styles.btnCont}>
+                        <TouchableOpacity style={styles.btnSubmit}
+                            onPress={journalSubmit}>
+                            <Text style={styles.btnText}> Submit Entry</Text>
+                        </TouchableOpacity>
+                    </View>  
+                </View>
+                <View>
+                <Text style={styles.header}> Previous Entries </Text>
                         { entries.map((entry)=>(
-                            <View key={entry.entry_ID}>
-                                <View>
-                                    <View style={styles.row}>
-                                        <Text > { entry.entry_title } </Text>
-                                        <Text> {entry.entry_date} </Text>
+                            <View key={entry.entry_ID} style={styles.entryCont}>
+                                    <View style={styles.rowCont}>
+                                        <View style={{flex: 2}}>
+                                            <Text style={styles.titleFont}> { entry.entry_title } </Text>
+                                        </View>
+                                        <View style={{flex: 1}}>
+                                            <Text style={styles.italicFont}> {entry.entry_date} </Text>
+                                        </View>
                                     </View>
-                                    <Text> {entry.entry_desc} </Text>
+                                    <View style={styles.journalEntry}>
+                                        <Text style={styles.oswaldFont}> {entry.entry_desc} </Text>
+                                    </View>
                                 </View>
-                            </View>
                         ))}
+                </View>
+                    
             </ScrollView>
-        </View>
     )
 };
 
@@ -164,36 +179,53 @@ export function Supporters() {
     },[]);
 
     return (
-        <View style={styles.container}>
-            <Text> Adding supporters is a great way of visualing your support group. Especially important in times where you may feel isolated and alone, it helps provide that knowledge that there are people there for you</Text>
-            <View>
-                <Text> Add New Supporter </Text>
+        <ScrollView>
+            <View style={styles.infoBlock}>
+                <Text style={{fontFamily: 'Abel', fontSize: 18}}> Adding supporters is a great way of visualing your support group. Especially important in times where you may feel isolated and alone, it helps provide that knowledge that there are people there for you</Text>
+            </View>
+            <View style={styles.toolCont}>
+                <Text style={styles.header}> Add New Supporter </Text>
                 <TextInput
+                style={styles.titleFont}
                 onChangeText={setSuppFName}
                 placeholder='Supporter Name'
                 value={supporter_fname}
                 />
-                <SelectList 
-                setSelected={setRelationshipID} 
-                data={relationships} 
-                />
-                <TouchableOpacity
-                    style
-                    onPress={supporterSubmit}>
-                        <Text> Add New Supporter </Text>
-                </TouchableOpacity>
+                <View style={{paddingVertical: 10}}>
+                    <SelectList 
+                    setSelected={setRelationshipID} 
+                    data={relationships} 
+                    />
+                </View>
+                <View style={styles.btnCont}>
+                        <TouchableOpacity style={styles.btnSubmit}
+                            onPress={supporterSubmit}>
+                            <Text style={styles.btnText}> Add New Supporter </Text>
+                        </TouchableOpacity>
+                    </View> 
             </View>
-            <View>
-                <Text> Supporters </Text>
+            <View >
+                <Text style={styles.header}> Supporters </Text>
                 { supporter.map((supporter)=>(
-                            <View key={supporter.supporter_ID}>
-                                <View>
-                                    <Text > {supporter.supporter_fname } </Text>
+                            <View key={supporter.supporter_ID} style={styles.toolCont}>
+                                <View style={styles.suppTitleCont}>
+                                    <Text style={styles.suppTitle}> Supporter's Name </Text>
+                                </View>
+                                <View style={styles.suppDetails}>
+                                    <Text style={styles.oswaldFont}> {supporter.supporter_fname } </Text>
+                                </View>
+                                <View style={styles.suppTitleCont}>
+                                    <Text style={styles.suppTitle}> Supporter's Relationship </Text>
+                                </View>
+                                <View style={styles.suppDetails}> 
+                                    <Text style={styles.oswaldFont}> {supporter.relationship_title } </Text>
                                 </View>   
                             </View>
                         ))}
             </View>
-        </View>
+        
+        </ScrollView>
+        
     );
 };
 
@@ -250,59 +282,61 @@ export function Mood() {
     },[added]);
 
     return (
-            <View style={styles.container}>
-            <View> 
-                <Text> Mood Tracker </Text>
-            </View>
+        <ScrollView>
+            <View style={styles.infoBlock}>
                 <Text> Being able to track ones mood throughout the day provides a better understanding of what times of day may affect an individuals mood the most, such as early morning due to the need to get to work or school.</Text>
                 <Text> This can help to identify specific triggers or causes of anxiety and help in managing those triggers so they occur less or are less impactful</Text>
-                <View>
-                    <Text>Time of day:</Text>
-                    <SelectList 
-                    setSelected={setTime}
-                    data={time} 
-                    />
-                    <Text>How I am feeling:</Text>
-                    <SelectList 
-                    setSelected={setMoodID}
-                    data={moods} 
-                    save="key"
-                    />
-                    <Text> What has influenced my mood:</Text>
-                    <TextInput style={styles.journalEntry}
-                        multiline
-                        numberOfLines={3}
-                        maxLength={100}
-                        placeholder='My mood has been influenced by'
-                        onChangeText={setInfluence}
-                        value={tracker_influence}/>
-                    <TouchableOpacity
-                        style
-                        onPress={moodSubmit}>
-                            <Text> Add New Mood </Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{width: '100%'}}>
-                <DataTable>
-                    <DataTable.Header >
-                        <DataTable.Title >Title</DataTable.Title>
-                        <DataTable.Title >Influence</DataTable.Title>
-                        <DataTable.Title>Time</DataTable.Title>
-                        <DataTable.Title>Date</DataTable.Title>
-                    </DataTable.Header>
-
-                    { userMoods.map((userMoods)=>(
-                            <DataTable.Row key={userMoods.tracker_ID}>
-                                <DataTable.Cell>{userMoods.mood_title}</DataTable.Cell>
-                                <DataTable.Cell>{userMoods.tracker_influence}</DataTable.Cell>
-                                <DataTable.Cell>{userMoods.tracker_time}</DataTable.Cell>
-                                <DataTable.Cell>{userMoods.tracker_date}</DataTable.Cell>
-                            </DataTable.Row>
-                        ))}
-
-                </DataTable>
-                </View>
             </View>
+            <View style={styles.entryCont}>
+                <Text style={styles.header}> Add New Mood</Text>
+                <Text>Time of day:</Text>
+                <SelectList 
+                setSelected={setTime}
+                data={time} 
+                />
+                <Text>How I am feeling:</Text>
+                <SelectList 
+                setSelected={setMoodID}
+                data={moods} 
+                save="key"
+                />
+                <Text> What has influenced my mood:</Text>
+                <TextInput style={styles.journalEntry}
+                    multiline
+                    numberOfLines={3}
+                    maxLength={100}
+                    placeholder='My mood has been influenced by'
+                    onChangeText={setInfluence}
+                    value={tracker_influence}/>
+                <TouchableOpacity
+                    style
+                    onPress={moodSubmit}>
+                        <Text> Add New Mood </Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{width: '100%'}}>
+            <DataTable>
+                <DataTable.Header >
+                    <DataTable.Title >Title</DataTable.Title>
+                    <DataTable.Title >Influence</DataTable.Title>
+                    <DataTable.Title>Time</DataTable.Title>
+                    <DataTable.Title>Date</DataTable.Title>
+                </DataTable.Header>
+
+                { userMoods.map((userMoods)=>(
+                        <DataTable.Row key={userMoods.tracker_ID}>
+                            <DataTable.Cell>{userMoods.mood_title}</DataTable.Cell>
+                            <DataTable.Cell>{userMoods.tracker_influence}</DataTable.Cell>
+                            <DataTable.Cell>{userMoods.tracker_time}</DataTable.Cell>
+                            <DataTable.Cell>{userMoods.tracker_date}</DataTable.Cell>
+                        </DataTable.Row>
+                    ))}
+
+            </DataTable>
+            </View>
+        </ScrollView>
+                
+         
     );
 };
 

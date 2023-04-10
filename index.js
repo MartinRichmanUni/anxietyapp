@@ -119,7 +119,7 @@ app.post("/sendSupporter", (req, res) => {
 // Get User's Supporters
 app.get("/getSupporters", (req, res) => {
   const user_ID = req.query.user_ID; 
-  conn.query("SELECT supporter_ID, supporter_fname, relationship_ID FROM supporter WHERE ?",
+  conn.query("SELECT s.supporter_ID, s.supporter_fname, r.relationship_title FROM supporter AS s INNER JOIN relationship AS r ON s.relationship_ID = r.relationship_ID WHERE ?",
   [user_ID], (err, result) => {
     if (err) {
       console.log(err);

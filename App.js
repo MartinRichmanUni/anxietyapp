@@ -7,6 +7,7 @@ import { createStackNavigator} from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState } from "react";
 import axios from "axios";
+import { useFonts } from 'expo-font';
 
 import {styles} from './styles/stylesheet';
 import HomeScreen from './screens/HomeScreen';
@@ -258,7 +259,16 @@ function AppTab() {
   );
 };
 
-export default function App({ navigation }) {
+export default function App() {
+
+  /* 
+    Credit to https://blog.logrocket.com/adding-custom-fonts-react-native/
+    Load custom fonts from the assets folder for use
+  */
+  const [found] = useFonts({
+      Oswald: require('./assets/fonts/Oswald-Regular.ttf'),
+      Abel: require('./assets/fonts/Abel-Regular.ttf'),
+  });
 
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
