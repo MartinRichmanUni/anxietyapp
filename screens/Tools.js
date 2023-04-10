@@ -284,56 +284,65 @@ export function Mood() {
     return (
         <ScrollView>
             <View style={styles.infoBlock}>
-                <Text> Being able to track ones mood throughout the day provides a better understanding of what times of day may affect an individuals mood the most, such as early morning due to the need to get to work or school.</Text>
-                <Text> This can help to identify specific triggers or causes of anxiety and help in managing those triggers so they occur less or are less impactful</Text>
+                <Text style={styles.oswaldFont}> Being able to track ones mood throughout the day provides a better understanding of what times of day may affect an individuals mood the most, such as early morning due to the need to get to work or school.</Text>
+                <Text style={styles.oswaldFont}> This can help to identify specific triggers or causes of anxiety and help in managing those triggers so they occur less or are less impactful</Text>
             </View>
             <View style={styles.entryCont}>
                 <Text style={styles.header}> Add New Mood</Text>
-                <Text>Time of day:</Text>
-                <SelectList 
-                setSelected={setTime}
-                data={time} 
-                />
-                <Text>How I am feeling:</Text>
-                <SelectList 
-                setSelected={setMoodID}
-                data={moods} 
-                save="key"
-                />
-                <Text> What has influenced my mood:</Text>
-                <TextInput style={styles.journalEntry}
-                    multiline
-                    numberOfLines={3}
-                    maxLength={100}
-                    placeholder='My mood has been influenced by'
-                    onChangeText={setInfluence}
-                    value={tracker_influence}/>
-                <TouchableOpacity
-                    style
-                    onPress={moodSubmit}>
-                        <Text> Add New Mood </Text>
-                </TouchableOpacity>
+                <View style={{paddingTop: 10, width: 200}}>
+                    <Text style={styles.suppTitle}>Time of day:</Text>
+                    <SelectList 
+                    setSelected={setTime}
+                    data={time} 
+                    />
+                </View>
+                <View style={{paddingTop: 10, width: 200}}>
+                    <Text style={styles.suppTitle}>How I am feeling:</Text>
+                    <SelectList 
+                    setSelected={setMoodID}
+                    data={moods} 
+                    save="key"
+                    />
+                </View>
+                <View style={{paddingTop: 10}}>
+                    <Text style={styles.suppTitle}> What has influenced my mood:</Text>
+                    <TextInput style={styles.journalEntry}
+                        multiline
+                        numberOfLines={3}
+                        maxLength={100}
+                        placeholder='My mood has been influenced by'
+                        onChangeText={setInfluence}
+                        value={tracker_influence}/>
+                </View>
+                <View style={styles.btnCont}>
+                    <TouchableOpacity style={styles.btnSubmit}
+                        onPress={moodSubmit}>
+                            <Text style={styles.btnText}> Add New Mood </Text>
+                    </TouchableOpacity>
+                </View>
+                
             </View>
-            <View style={{width: '100%'}}>
+            <Text style={styles.header}> Your Moods </Text>
+            <ScrollView horizontal={true}>
             <DataTable>
                 <DataTable.Header >
-                    <DataTable.Title >Title</DataTable.Title>
-                    <DataTable.Title >Influence</DataTable.Title>
-                    <DataTable.Title>Time</DataTable.Title>
-                    <DataTable.Title>Date</DataTable.Title>
+                    <DataTable.Title style={{flex: 1}}>Title</DataTable.Title>
+                    <DataTable.Title style={{flex: 4}}>Influence</DataTable.Title>
+                    <DataTable.Title style={{flex: 1}}>Time</DataTable.Title>
+                    <DataTable.Title style={{flex: 3}}>Date</DataTable.Title>
                 </DataTable.Header>
 
                 { userMoods.map((userMoods)=>(
                         <DataTable.Row key={userMoods.tracker_ID}>
-                            <DataTable.Cell>{userMoods.mood_title}</DataTable.Cell>
-                            <DataTable.Cell>{userMoods.tracker_influence}</DataTable.Cell>
-                            <DataTable.Cell>{userMoods.tracker_time}</DataTable.Cell>
-                            <DataTable.Cell>{userMoods.tracker_date}</DataTable.Cell>
+                            <DataTable.Cell style={{width: 50}}>{userMoods.mood_title}</DataTable.Cell>
+                            <DataTable.Cell style={{width: 200}}>{userMoods.tracker_influence}</DataTable.Cell>
+                            <DataTable.Cell style={{width: 50}}>{userMoods.tracker_time}</DataTable.Cell>
+                            <DataTable.Cell style={{width: 150}}>{userMoods.tracker_date}</DataTable.Cell>
                         </DataTable.Row>
                     ))}
 
             </DataTable>
-            </View>
+            </ScrollView>
         </ScrollView>
                 
          

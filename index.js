@@ -226,7 +226,7 @@ app.post('/changePassword', (req,res) => {
 app.get('/getUserMoods', (req,res) => {
   const user_ID = req.query.user_ID;
 
-  conn.query("SELECT tr.tracker_ID, tr.tracker_date, tr.tracker_time, tr.tracker_influence, m.mood_title FROM moodTracker AS tr INNER JOIN mood AS m ON tr.mood_ID= m.mood_ID WHERE user_ID = ?",
+  conn.query("SELECT tr.tracker_ID, DATE_FORMAT(tr.tracker_date, '%d %M %Y') AS tracker_date,  tr.tracker_time, tr.tracker_influence, m.mood_title FROM moodTracker AS tr INNER JOIN mood AS m ON tr.mood_ID= m.mood_ID WHERE user_ID = ?",
   [user_ID], (err, result) => {
       if (err) {
         console.log(err);
