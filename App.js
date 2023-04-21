@@ -1,5 +1,4 @@
 import 'react-native-gesture-handler';
-import {  SafeAreaProvider} from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Text, TextInput, View, TouchableOpacity, Alert} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -21,6 +20,29 @@ const AuthContext = React.createContext();
 const url = 'http://192.168.0.15:19007';
 // Creation of Global variable
 global.url = url;
+
+/*
+  Boolean based on if TextInput is empty or not
+*/
+function emptyCheck(user_input) {
+  if (user_input.trim())
+  {
+    return true;
+  } 
+  else
+  {
+    return false;
+  }
+}
+
+/*
+  Regex Check for Uppercase letter, number and special character
+*/
+export function checkPasswordRegex(str)
+{
+    var passRegex =  /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{7,250}$/;
+    return passRegex.test(str);
+}
 
 function LoginScreen({ navigation }) {
 
@@ -87,43 +109,44 @@ function LoginScreen({ navigation }) {
 
 function RegisterScreen({navigation}) {
 
+  const [fname, setFName] = useState("");
+  const [lname, setLName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passcheck, setPassCheck] = useState("");
+
   const emailRegExp = new RegExp("^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$");
 
-  const [fname, setFName] = useState();
-  const [lname, setLName] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [passcheck, setPassCheck] = useState();
-
-  function checkPasswords() {
-    if (password == passcheck) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-  function validatePassword() {
-    if (password.length > 15 || password.length < 6) {
-      return 0;
-    } else {
-      return 1;
-    }
-  }
-
-  function validateEmail() {
+  /*
+    Return Boolean based on specified regex
+  */
+  function validateEmail(email) {
       return emailRegExp.test(email);
   }
 
-  //Validation check
+  /* 
+    Check validation of all fields to ensure they aren't empty
+    Check validation of user inputted email, matches regex
+    Check validation of password, matches regex and is at least 7 characters long
+    Check validation that password and check password matches
+  */
   function onSubmit() {
     let validCheck = 1;
 
-    if (!validateEmail() || !validatePassword() || !checkPasswords()) {
-      Alert.alert("Error", "Please ensure all data fields are not empty and in the correct format");
+    if (!emptyCheck(fname) || !emptyCheck(lname) || !emptyCheck(email) || !emptyCheck(password) || !emptyCheck(passcheck)) {
+      Alert.alert("Error", "Some fields may be empty");
+      validCheck = 0;
+    }else if (!validateEmail(email)) {
+      Alert.alert("Error", "Email is not in the specified format");
+      validCheck = 0;
+    }else if (!checkPasswordRegex(password)) {
+      Alert.alert("Error", "Password requires a letter, number and special character and at least 7 characters long");
+      validCheck = 0;
+    }else if (password != passcheck) {
+      Alert.alert("Error", "Passwords do not match");
       validCheck = 0;
     }
-
+    
     if (validCheck) {
       addUser();
       Alert.alert("Account Created", "Account successfully created!");
@@ -243,7 +266,6 @@ function ProfileStackScreen() {
   )
 };
 
-
 function AppTab() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, }}>
@@ -305,6 +327,10 @@ export default function App() {
     bootstrapAsync();
   }, []);
 
+  /*
+    Specification of token and case type based on option chosen,
+    via https://reactnavigation.org/docs/auth-flow/
+  */
   const authContext = React.useMemo(
     () => ({
       signIn: async () => {
@@ -320,7 +346,7 @@ export default function App() {
 
 
   return (
-      <AuthContext.Provider value={authContext}>
+    <AuthContext.Provider value={authContext}>
       <NavigationContainer >
         {state.userToken == null ? <LoginStackScreen /> : <AppTab /> }
       </NavigationContainer>

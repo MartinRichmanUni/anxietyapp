@@ -75,9 +75,6 @@ export default function ProfileScreen ({ navigation }) {
             ))}
 
             <View>
-                <TouchableOpacity>
-                    <Text> Change E-mail Address</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
                 onPress={() => setModalCheckVisible(true)}>
                     <Text> Change Password</Text>

@@ -7,6 +7,20 @@ import { DataTable } from 'react-native-paper';
 import moment from 'moment'; 
 import axios from "axios";
 
+/*
+  Boolean based on if TextInput is empty or not
+*/
+function emptyCheck(user_input) {
+    if (user_input.trim())
+    {
+      return true;
+    } 
+    else
+    {
+      return false;
+    }
+  }
+
 export function Journal() {
 
     const [entry_title, setTitle] = useState("");
@@ -17,22 +31,33 @@ export function Journal() {
     var user_ID = global.user_ID;
     var url = global.url;
     
-    //Send user entered data to database
+    /*
+        Validation check for empty fields
+        Send user entered data to database
+    */
     const journalSubmit = () => {
-        axios.post(url + '/sendEntry', {
-          entry_title: entry_title,
-          entry_desc: entry_desc,
-          entry_date: entry_date,
-          user_ID: global.user_ID,
-        }).then(() => {
-            setTitle("");
-            setDesc("");
-            setAdded(true)
-          Alert.alert("Success", "Entry has been saved!");
-        }).catch((error) => console.log(error));
+
+        if (!emptyCheck(entry_title) || !emptyCheck(entry_desc)) {
+            Alert.alert("Login", "One or more fields are empty");
+        } else {
+            axios.post(url + '/sendEntry', {
+                entry_title: entry_title,
+                entry_desc: entry_desc,
+                entry_date: entry_date,
+                user_ID: global.user_ID,
+              }).then(() => {
+                  setTitle("");
+                  setDesc("");
+                  setAdded(true)
+                Alert.alert("Success", "Entry has been saved!");
+              }).catch((error) => console.log(error));
+        }
       };
 
-    //On screen load, call entry data
+    /*
+        On screen load & added variable change,
+        call entry data
+    */
     useEffect(() => {
         axios.get(url + '/getEntries', {
             params: {
@@ -107,21 +132,29 @@ export function HelpfulThoughts() {
 
     const [thoughts, setThoughts] = useState([]);
     const [added, setAdded] = useState(false);
-    const [uThought, setUThought] = useState();
+    const [uThought, setUThought] = useState("");
     const [userThoughts, setUserThoughts] = useState([]);
     var user_ID = global.user_ID;
     var url = global.url;
 
+    /*
+        Validation check for empty fields
+        Send thought data to database
+    */
     const thoughtSubmit = () => {
-        axios.post(url + '/sendThought', {
-          uthought_title: uThought,
-          user_ID: global.user_ID,
-        }).then(() => {
-            
-            setAdded(true)
-            setUThought("");
-          Alert.alert("Success", "Thought has been saved!");
-        }).catch((error) => console.log(error));
+        if(!emptyCheck(uThought)) {
+            Alert.alert("Error", "One or more fields may be empty");
+        } else {
+            axios.post(url + '/sendThought', {
+                uthought_title: uThought,
+                user_ID: global.user_ID,
+              }).then(() => {
+                  
+                  setAdded(true)
+                  setUThought("");
+                Alert.alert("Success", "Thought has been saved!");
+            }).catch((error) => console.log(error));
+        }      
     };
 
     useEffect(() => {
@@ -150,7 +183,7 @@ export function HelpfulThoughts() {
     return (
         <ScrollView >
             <View style={styles.infoBlock}>
-                <Text> Creating helpful thoughts will help combat the negative thoughts that may arise throughout the day due to different circumstances. Adding thoughts specific to the negative thoughts you may experience
+                <Text style={{fontFamily: 'Abel', fontSize: 18}}> Creating helpful thoughts will help combat the negative thoughts that may arise throughout the day due to different circumstances. Adding thoughts specific to the negative thoughts you may experience
                     will help in providing you with a different perspective of thinking in times where it might seem difficult not to think negatively.
                 </Text>
             </View>
@@ -188,10 +221,10 @@ export function HelpfulThoughts() {
             <View>
                 <Text style={styles.header}> Your Thoughts </Text>
                 { userThoughts.map((thoughts)=>(
-                            <View key={thoughts.uthought_ID} style={styles.toolCont}>
-                                  <Text> {thoughts.uthought_title} </Text>
-                            </View>
-                        ))}
+                    <View key={thoughts.uthought_ID} style={styles.toolCont}>
+                            <Text> {thoughts.uthought_title} </Text>
+                    </View>
+                ))}
             </View> 
              
         </ScrollView>
@@ -203,20 +236,28 @@ export function Supporters() {
     const [supporter, setSupporter] = useState([]);
     const [relationships, setRelationships] = useState([]);
     const [added, setAdded] = useState(false);
-    const [supporter_fname, setSuppFName] = useState();
-    const [relationship_ID, setRelationshipID] = useState();
+    const [supporter_fname, setSuppFName] = useState("");
+    const [relationship_ID, setRelationshipID] = useState("");
 
+    /*
+        Validation check for empty fields
+        Send user entered data to database
+    */
     const supporterSubmit = () => {
-        axios.post(url + '/sendSupporter', {
-          supporter_fname: supporter_fname,
-          relationship_ID: relationship_ID,
-          user_ID: global.user_ID,
-        }).then(() => {
-            setAdded(true)
-            setSuppFName("");
-            setRelationshipID();
-          Alert.alert("Success", "Supporter has been saved!");
-        }).catch((error) => console.log(error));
+        if (!emptyCheck(supporter_fname) || !emptyCheck(relationship_ID)) {
+            Alert.alert("Error", "One or more fields may be empty");
+        } else {
+            axios.post(url + '/sendSupporter', {
+                supporter_fname: supporter_fname,
+                relationship_ID: relationship_ID,
+                user_ID: global.user_ID,
+              }).then(() => {
+                  setAdded(true)
+                  setSuppFName("");
+                  setRelationshipID();
+                Alert.alert("Success", "Supporter has been saved!");
+              }).catch((error) => console.log(error));
+        }  
     };
 
     
@@ -276,21 +317,22 @@ export function Supporters() {
             <View >
                 <Text style={styles.header}> Supporters </Text>
                 { supporter.map((supporter)=>(
-                            <View key={supporter.supporter_ID} style={styles.toolCont}>
-                                <View style={styles.suppTitleCont}>
-                                    <Text style={styles.suppTitle}> Supporter's Name </Text>
-                                </View>
-                                <View style={styles.suppDetails}>
-                                    <Text style={styles.oswaldFont}> {supporter.supporter_fname } </Text>
-                                </View>
-                                <View style={styles.suppTitleCont}>
-                                    <Text style={styles.suppTitle}> Supporter's Relationship </Text>
-                                </View>
-                                <View style={styles.suppDetails}> 
-                                    <Text style={styles.oswaldFont}> {supporter.relationship_title } </Text>
-                                </View>   
-                            </View>
-                        ))}
+                    <View key={supporter.supporter_ID} 
+                        style={styles.toolCont}>
+                        <View style={styles.suppTitleCont}>
+                            <Text style={styles.suppTitle}> Supporter's Name </Text>
+                        </View>
+                        <View style={styles.suppDetails}>
+                            <Text style={styles.oswaldFont}> {supporter.supporter_fname } </Text>
+                        </View>
+                        <View style={styles.suppTitleCont}>
+                            <Text style={styles.suppTitle}> Supporter's Relationship </Text>
+                        </View>
+                        <View style={styles.suppDetails}> 
+                            <Text style={styles.oswaldFont}> {supporter.relationship_title } </Text>
+                        </View>   
+                    </View>
+                ))}
             </View>
         
         </ScrollView>
@@ -302,27 +344,35 @@ export function Mood() {
 
     const [moods, setMoods] = useState([]);
     const [userMoods, setUserMoods] = useState([]);
-    const [mood_ID, setMoodID] = useState();
+    const [mood_ID, setMoodID] = useState("");
     var tracker_date = moment().format("YYYY,MM,DD");
-    const [tracker_influence, setInfluence] = useState();
+    const [tracker_influence, setInfluence] = useState("");
     const [added, setAdded] = useState(false);
     const time = [
         "00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00",
         "13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00","24:00"
     ];
-    const [tracker_time , setTime] = useState();
+    const [tracker_time , setTime] = useState("");
 
+    /*
+        Validation check for empty fields
+        Send user entered data to database
+    */
     const moodSubmit = () => {
-        axios.post(url + '/sendMood', {
-          tracker_date: tracker_date,
-          tracker_time: tracker_time,
-          tracker_influence: tracker_influence,
-          mood_ID: mood_ID,
-          user_ID: global.user_ID,
-        }).then(() => {
-            setAdded(true);
-          Alert.alert("Success", "Mood has been saved!");
-        }).catch((error) => console.log(error));
+        if (!emptyCheck(tracker_time) || !emptyCheck(tracker_influence) || !emptyCheck(mood_ID)) {
+            Alert.alert("Error", "One or more fields may be empty");
+        } else {
+            axios.post(url + '/sendMood', {
+                tracker_date: tracker_date,
+                tracker_time: tracker_time,
+                tracker_influence: tracker_influence,
+                mood_ID: mood_ID,
+                user_ID: global.user_ID,
+              }).then(() => {
+                  setAdded(true);
+                Alert.alert("Success", "Mood has been saved!");
+              }).catch((error) => console.log(error));
+        }
     };
 
     useEffect(() => {
@@ -393,24 +443,32 @@ export function Mood() {
             </View>
             <Text style={styles.header}> Your Moods </Text>
             <ScrollView horizontal={true}>
-            <DataTable>
-                <DataTable.Header >
-                    <DataTable.Title style={{flex: 1}}>Title</DataTable.Title>
-                    <DataTable.Title style={{flex: 4}}>Influence</DataTable.Title>
-                    <DataTable.Title style={{flex: 1}}>Time</DataTable.Title>
-                    <DataTable.Title style={{flex: 3}}>Date</DataTable.Title>
-                </DataTable.Header>
+                <DataTable>
+                    <DataTable.Header >
+                        <DataTable.Title style={{flex: 1}}>Title</DataTable.Title>
+                        <DataTable.Title style={{flex: 4}}>Influence</DataTable.Title>
+                        <DataTable.Title style={{flex: 1}}>Time</DataTable.Title>
+                        <DataTable.Title style={{flex: 3}}>Date</DataTable.Title>
+                    </DataTable.Header>
 
-                { userMoods.map((userMoods)=>(
+                    { userMoods.map((userMoods)=>(
                         <DataTable.Row key={userMoods.tracker_ID}>
-                            <DataTable.Cell style={{width: 50}}>{userMoods.mood_title}</DataTable.Cell>
-                            <DataTable.Cell style={{width: 200}}>{userMoods.tracker_influence}</DataTable.Cell>
-                            <DataTable.Cell style={{width: 50}}>{userMoods.tracker_time}</DataTable.Cell>
-                            <DataTable.Cell style={{width: 150}}>{userMoods.tracker_date}</DataTable.Cell>
+                            <DataTable.Cell style={{width: 50}}>
+                                {userMoods.mood_title}
+                            </DataTable.Cell>
+                            <DataTable.Cell style={{width: 200}}>
+                                {userMoods.tracker_influence}
+                            </DataTable.Cell>
+                            <DataTable.Cell style={{width: 50}}>
+                                {userMoods.tracker_time}
+                            </DataTable.Cell>
+                            <DataTable.Cell style={{width: 150}}>
+                                {userMoods.tracker_date}
+                            </DataTable.Cell>
                         </DataTable.Row>
                     ))}
 
-            </DataTable>
+                </DataTable>
             </ScrollView>
         </ScrollView>
                 

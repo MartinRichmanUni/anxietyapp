@@ -12,6 +12,11 @@ export const styles = StyleSheet.create({
       borderWidth: 1, 
       padding: 15
     },
+    infoBlock_Blue: {
+      padding: 10, 
+      borderBottomWidth: 2, 
+      backgroundColor: "#C9EDFA"
+    },
     toolCont: {
       borderBottomWidth: 1, 
       paddingHorizontal: 10, 
@@ -167,5 +172,25 @@ export const styles = StyleSheet.create({
     dropdownCont: {
       paddingTop: 10, 
       width: 200
+    },
+    contBottomBdr: {
+      paddingVertical: 10, 
+      paddingHorizontal: 5, 
+      borderBottomWidth: 2
+    },
+    font20: {
+      fontSize: 20
+    },
+    font18: {
+      fontSize: 18
+    },
+    oswald18: {
+      fontSize: 18, 
+      fontFamily: 'Oswald'
+    },
+    abel22: {
+      fontFamily: 'Abel', 
+      fontSize: 22, 
+      paddingHorizontal: 5
     }
     });
